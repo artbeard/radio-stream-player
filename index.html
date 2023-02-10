@@ -10,14 +10,12 @@
 <body>
 	<div id="app">
 		<div class="row">
-			<button>Start</button>
-			<button class="rb">Pause</button>
-			<button>Toggle bitrate</button>
-			<span>135 kb/s</span>
+			<button id="ctrlPlay">Start</button>
+			<button id="ctrlPause" class="rb" disabled>Pause</button>
+			<button id="ctrlToggleBitrate" disabled>Toggle bitrate</button>
+			<span id="viewCurrentBitrate"></span>
 		</div>
-		<div>
-			status
-		</div>
+		<div id="viewCurrentStatus"></div>
 	</div>
 	<script type="module" src="/src/main.ts"></script>
 </body>
