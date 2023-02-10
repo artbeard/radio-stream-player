@@ -5,7 +5,7 @@ export default interface IAudioSource{
 	 * 	элемент типа AudioNode
 	 * @returns AudioNode
 	 */
-	createAudioNode: () => AudioNode;
+	createAudioNode: (audioContex: AudioContext) => AudioNode;
 	/**
 	 * Запуск воспроизведения
 	 */
@@ -24,10 +24,15 @@ export default interface IAudioSource{
 	 * Событие, возникающее, если нет данных для буферизации
 	 * @param event 
 	 */
-	waitData: (event?: Event) => void;
+	waitDataCallback: (event?: Event) => void;
 	/**
 	 * Событие, возникающее, когда есть данные для буферизации
 	 * @param event 
 	 */
-	ready: (event?: Event) => void;
+	readyCallback:  (event?: Event) => void;
+	/**
+	 * Срабатывает, при переключении битрейта
+	 * @param event 
+	 */
+	toggleBitrateCallback:  (currentBitrate: any, event?: Event) => void;
 }
