@@ -1,3 +1,5 @@
+//предварительно скопилировать и перенести в public
+//tsc ./src/audio-recorder-processor.ts -t ESNext
 class AudioRecorderProcessor extends AudioWorkletProcessor {
 
 	protected simpleRate: number;
