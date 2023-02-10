@@ -16,18 +16,14 @@ export default class AudioSource implements IAudioSource
 		)
 	{
 		this.src = src;
-		this.waitDataCallback = waitDataCallback;
-		this.readyCallback = readyCallback;
+		// this.waitDataCallback = waitDataCallback;
+		// this.readyCallback = readyCallback;
 		if (toggleBitrateCallback) this.toggleBitrateCallback = toggleBitrateCallback;
 		this.source = new Audio();
 		this.source.crossOrigin = 'anonymous';
 
-		this.source.addEventListener('canplay', (event) => {
-			this.waitDataCallback(event);
-		});
-		this.source.addEventListener('waiting', (event) => {
-			this.readyCallback(event);
-		});
+		this.source.addEventListener('canplay', waitDataCallback);
+		this.source.addEventListener('waiting', readyCallback);
 	}
 	
 	/**
@@ -35,29 +31,41 @@ export default class AudioSource implements IAudioSource
 	 */
 	protected currentBitrate: keyof IUrlSource = 'high';
 
-	play(){
-		this.source.src = this.src[this.currentBitrate];
-		this.source.play();
+	async play(){
+		if (!this.source.src)
+			this.source.src = this.src[this.currentBitrate];
+		await this.source.play();
 	}
-	pause(){
-		this.source.pause();
+	async pause(){
+		await this.source.pause();
 	}
 	
 	/**
 	 * Останавливаем, переключаем битрейт, запускаем заново
 	 */
 	toggleBitrate(){
-		this.pause();
-		this.currentBitrate = this.currentBitrate == 'high'
-			? 'low'
-			: 'high';
-		this.source.src = this.src[this.currentBitrate];
-		this.play();
-		this.toggleBitrateCallback(this.currentBitrate);
+		this.pause()
+			.then(()=>{
+				this.currentBitrate = this.currentBitrate == 'high'
+					? 'low'
+					: 'high';
+				this.source.src = this.src[this.currentBitrate];
+				this.play();
+				this.toggleBitrateCallback(this.currentBitrate);
+			})
+			.catch(e =>{
+				console.log('Возникла проблема с переключением битрейта', e);
+			});
 	}
 	
-	createAudioNode(audioContex: AudioContext){
+	createAudioNode(audioContex: AudioContext): AudioNode
+	{
 		return audioContex.createMediaElementSource(this.source);
+	}
+
+	getCurrentBitrate(): string
+	{
+		return this.currentBitrate;
 	}
 
 	//События
